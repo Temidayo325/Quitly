@@ -15,7 +15,7 @@ class UserController extends Controller
           return response()->json([
                'email' => $newUser->email,
                'name' => $newUser->name,
-               'verificationCode' => \App\Services\Utility::generateInteger(),
+               'verificationCode' => $newUser->code,
                'status' => true,
                'statusCode' => 201
           ]);
@@ -23,7 +23,7 @@ class UserController extends Controller
 
      public function login(\App\Http\Requests\UserLoginRequest $request)
      {
-          $user = \App\Models\User::select('id', 'email', 'name', 'institution','nickname', 'verified')->where('email', $request->email)->first();
+               $user = \App\Models\User::select('id', 'email', 'name', 'institution','nickname', 'verified')->where('email', $request->email)->first();
                 if ($user->verified !== 1)
                 {
                      // send verification code to email address
@@ -32,8 +32,7 @@ class UserController extends Controller
                     return response()->json([
                          'status' => false,
                          'statusCode' => 303,
-                         'message' => "Account not verified",
-                         'user' => $user
+                         'message' => "Account not verified"
                     ]);
                 }
                 // check if the password is correct and Authenticate user
@@ -55,14 +54,15 @@ class UserController extends Controller
 
      public function verifyEmail(\App\Http\Requests\ValidateEmailRequest $request)
      {
-          $user = \App\Models\User::select('id', 'email', 'name')->where('email', $request->email)->first();
+          $user = \App\Models\User::select('id', 'email', 'name', 'verified')->where('email', $request->email)->first();
           $user->verified = 1;
           $user->save();
 
           return response()->json([
                'status' => true,
                'message' => "User successfully logged in",
-               'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK
+               'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK,
+               'user' => $user
           ]);
      }
 
@@ -90,7 +90,7 @@ class UserController extends Controller
      public function resetPassword(\App\Http\Requests\PasswordResetRequest $request)
      {
           $user = \App\Models\User::select('password', 'id')->where('email', $request->email)->first();
-          $user->password = \Illuminate\Support\Facades\Hash::make($request->password1);
+          $user->password = \Illuminate\Support\Facades\Hash::make($request->password);
           $user->save();
 
           // \Illuminate\Support\Facades\Mail::to($request->email)->queue( new \App\Mail\PasswordChanged());

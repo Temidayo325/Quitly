@@ -16,6 +16,7 @@ class CreateNewUser
     public static function create(\App\Http\Requests\UserRegisterRequest $input)
     {
          $checkRole = \App\Services\checkRole::check($input->email);
+         logger($checkRole);
          $user =  User::create([
             'name' => $input->name,
             'email' => $input->email,
