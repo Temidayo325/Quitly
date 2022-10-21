@@ -8,7 +8,7 @@ use App\Jobs\UserRegisteredEmails;
 
 class UserController extends Controller
 {
-     public function register(\App\Http\Requests\UserLoginRequest $request)
+     public function register(\App\Http\Requests\UserRegisterRequest $request)
      {
           $newUser = \App\Actions\CreateNewUser::create($request);
           UserRegisteredEmails::dispatch($newUser);
@@ -21,8 +21,98 @@ class UserController extends Controller
           ]);
      }
 
-     public function login(){}
-     public function verifyEmail(){}
-     public function resendEmailVerification(){}
+     public function login(\App\Http\Requests\UserLoginRequest $request)
+     {
+          $user = \App\Models\User::select('id', 'email', 'name', 'institution','nickname', 'verified')->where('email', $request->email)->first();
+                if ($user->verified !== 1)
+                {
+                     // send verification code to email address
+                    \App\Jobs\SendRecoveryEmail::dispatch($user);
+                    // $request->session()->put('email', $request->email);
+                    return response()->json([
+                         'status' => false,
+                         'statusCode' => 303,
+                         'message' => "Account not verified",
+                         'user' => $user
+                    ]);
+                }
+                // check if the password is correct and Authenticate user
+                if ( ! \Illuminate\Support\Facades\Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+                     return response()->json([
+                          'status' => false,
+                          'statusCode' => 422,
+                          'message' => "Invalid input given, ensure your password and email are correct",
+                          'user' => $user
+                     ]);
+                }
+                return response()->json([
+                     'token' => $user->createToken('auth_token_for_user')->plainTextToken,
+                     'message' => "User successfully logged in",
+                     'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK,
+                     'user' => $user
+                ]);
+     }
 
+     public function verifyEmail(\App\Http\Requests\ValidateEmailRequest $request)
+     {
+          $user = \App\Models\User::select('id', 'email', 'name')->where('email', $request->email)->first();
+          $user->verified = 1;
+          $user->save();
+
+          return response()->json([
+               'status' => true,
+               'message' => "User successfully logged in",
+               'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK
+          ]);
+     }
+
+     public function resendEmailVerification()
+     {
+          $user = \App\Models\User::select('id', 'email', 'name', 'institution','nickname', 'verified')->where('email', $request->email)->first();
+          \App\Jobs\SendRecoveryEmail::dispatch($user);
+          return response()->json([
+               'status' => true,
+               'message' => "Verification email resent",
+               'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK
+          ]);
+     }
+
+     public function logout(Request $request)
+     {
+          \Illuminate\Support\Facades\Auth::user()->currentAccessToken()->delete();
+          return response()->json([
+               'status' => true,
+               'message' => "You have been logged out from your account",
+               'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK
+          ]);
+     }
+
+     public function resetPassword(\App\Http\Requests\PasswordResetRequest $request)
+     {
+          $user = \App\Models\User::select('password', 'id')->where('email', $request->email)->first();
+          $user->password = \Illuminate\Support\Facades\Hash::make($request->password1);
+          $user->save();
+
+          // \Illuminate\Support\Facades\Mail::to($request->email)->queue( new \App\Mail\PasswordChanged());
+          return response()->json([
+              'status' => true,
+              'message' => "Password changed",
+              'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK
+         ]);
+     }
+
+     public function changePassword(\App\Http\Requests\PasswordResetRequest $request)
+     {
+            // Change the hashed password
+            $user = \App\Models\User::select('password', 'id')->where('email', auth()->user()->email)->first();
+            $user->password = \Illuminate\Support\Facades\Hash::make($request->password1);
+            $user->save();
+
+            // \Illuminate\Support\Facades\Mail::to($request->email)->queue( new \App\Mail\PasswordChanged());
+            return response()->json([
+                'status' => true,
+                'message' => "Password changed",
+                'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK
+           ]);
+     }
 }

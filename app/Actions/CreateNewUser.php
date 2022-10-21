@@ -13,7 +13,7 @@ class CreateNewUser
      * @param  array  $input
      * @return \App\Models\User
      */
-    public static function create(\App\Http\Requests\UserLoginRequest $input)
+    public static function create(\App\Http\Requests\UserRegisterRequest $input)
     {
          $checkRole = \App\Services\checkRole::check($input->email);
          $user =  User::create([
@@ -22,6 +22,7 @@ class CreateNewUser
             'nickname' => $input->email,
             'is_admin' => $checkRole[0],
             'institution' => $input->email,
+            'verified' => 0,
             'code' => \App\Services\Utility::generateInteger(),
             'password' => Hash::make($input->password),
          ]);

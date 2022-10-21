@@ -19,3 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/register', [App\Http\Controllers\v1\UserController::class, 'register']);
+Route::post('/login', [App\Http\Controllers\v1\UserController::class, 'login']);
+Route::post('/verifyEmail', [App\Http\Controllers\v1\UserController::class, 'verifyEmail']);
+Route::post('/resetPassword', [App\Http\Controllers\v1\UserController::class, 'resetPassword']);
+Route::post('/changePassword', [App\Http\Controllers\v1\UserController::class, 'changePassword'])->middleware('auth:sanctum');
