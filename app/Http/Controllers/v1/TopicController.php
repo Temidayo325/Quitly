@@ -106,6 +106,11 @@ class TopicController extends Controller
      */
     public function destroy($id)
     {
-        //
+         $topic = \App\Models\Topic::whereId($id)->delete();
+         return response()->json([
+                  'status' => true,
+                   'message' => 'Topic successfully deleted',
+                   'statusCode' => 201
+         ]);
     }
 }

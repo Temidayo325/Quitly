@@ -29,3 +29,4 @@ Route::get('/topics', [App\Http\Controllers\v1\TopicController::class, 'index'])
 Route::get('/topics/{id}', [App\Http\Controllers\v1\TopicController::class, 'show']);
 Route::post('/topics', [App\Http\Controllers\v1\TopicController::class, 'store']);
 Route::patch('/topics', [App\Http\Controllers\v1\TopicController::class, 'update']);
+Route::delete('/topics/{id}', [App\Http\Controllers\v1\TopicController::class, 'destroy']);
