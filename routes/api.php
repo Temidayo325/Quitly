@@ -25,8 +25,15 @@ Route::post('/resetPassword', [App\Http\Controllers\v1\UserController::class, 'r
 
 // Wrap everything around here under the auth middleware
 Route::post('/changePassword', [App\Http\Controllers\v1\UserController::class, 'changePassword'])->middleware('auth:sanctum');
+// Topic resource
 Route::get('/topics', [App\Http\Controllers\v1\TopicController::class, 'index']);
 Route::get('/topics/{id}', [App\Http\Controllers\v1\TopicController::class, 'show']);
 Route::post('/topics', [App\Http\Controllers\v1\TopicController::class, 'store']);
 Route::patch('/topics', [App\Http\Controllers\v1\TopicController::class, 'update']);
 Route::delete('/topics/{id}', [App\Http\Controllers\v1\TopicController::class, 'destroy']);
+// Question resource
+Route::get('/question', [App\Http\Controllers\v1\QuestionController::class, 'index']);
+Route::get('/question/{id}', [App\Http\Controllers\v1\QuestionController::class, 'show']);
+Route::post('/question', [App\Http\Controllers\v1\QuestionController::class, 'store']);
+Route::patch('/question', [App\Http\Controllers\v1\QuestionController::class, 'update']);
+Route::delete('/question/{id}', [App\Http\Controllers\v1\QuestionController::class, 'destroy']);

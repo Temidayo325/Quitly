@@ -10,10 +10,9 @@ class Question extends Model
     use HasFactory;
 
     protected $fillable = [
-         'question', 'option1',
-         'option2', 'option3',
-         'option4', 'answer',
-         'status', 'topic_id'
+         'question', 'option1', 'option2',
+         'option3', 'option4', 'answer',
+         'status', 'topic_id', 'type'
     ];
 
     public function topic()
