@@ -35,10 +35,10 @@ class TopicController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\CreateTopicRequest  $request
+     * @param  \App\Http\Requests\Topic\CreateTopicRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(\App\Http\Requests\CreateTopicRequest $request)
+    public function store(\App\Http\Requests\Topic\CreateTopicRequest $request)
     {
              $topic = \App\Actions\CreateNewTopic::create($request);
              return response()->json([
@@ -83,7 +83,7 @@ class TopicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(\App\Http\Requests\UpdateTopicRequest  $request)
+    public function update(\App\Http\Requests\Topic\UpdateTopicRequest  $request)
     {
             $topic = \App\Models\Topic::whereId($request->topic_id)->first();
             $topic->title = $request->title;

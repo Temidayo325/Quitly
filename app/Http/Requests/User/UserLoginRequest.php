@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class QuestionIdRequest extends FormRequest
+class UserLoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,16 @@ class QuestionIdRequest extends FormRequest
     public function rules()
     {
         return [
-             'question_id' => 'required|exists:questions,id'
+             'password' => 'required|string',
+             'email' => 'required|email|exists:users,email'
         ];
     }
+
+    // public function messages()
+    //  {
+    //      return [
+    //          'email.required' => 'Emal has been ch',
+    //          'nickname.required' => 'A message is required',
+    //      ];
+    //  }
 }

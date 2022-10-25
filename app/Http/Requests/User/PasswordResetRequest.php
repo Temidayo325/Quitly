@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ValidateEmailRequest extends FormRequest
+class PasswordResetRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,8 @@ class ValidateEmailRequest extends FormRequest
     public function rules()
     {
         return [
-             'code' => 'required|exists:users,code|string|bail',
-             'email' => 'required|email|exists:users,email|bail'
+             'email' => 'required|exists:users,email|email',
+             'password' => 'required|bail'
         ];
     }
 }

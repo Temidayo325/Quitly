@@ -8,7 +8,7 @@ use App\Jobs\UserRegisteredEmails;
 
 class UserController extends Controller
 {
-     public function register(\App\Http\Requests\UserRegisterRequest $request)
+     public function register(\App\Http\Requests\User\UserRegisterRequest $request)
      {
           $newUser = \App\Actions\CreateNewUser::create($request);
           UserRegisteredEmails::dispatch($newUser);
@@ -21,7 +21,7 @@ class UserController extends Controller
           ]);
      }
 
-     public function login(\App\Http\Requests\UserLoginRequest $request)
+     public function login(\App\Http\Requests\User\UserLoginRequest $request)
      {
                $user = \App\Models\User::select('id', 'email', 'name', 'institution','nickname', 'verified')->where('email', $request->email)->first();
                 if ($user->verified !== 1)
@@ -52,7 +52,7 @@ class UserController extends Controller
                 ]);
      }
 
-     public function verifyEmail(\App\Http\Requests\ValidateEmailRequest $request)
+     public function verifyEmail(\App\Http\Requests\User\ValidateEmailRequest $request)
      {
           $user = \App\Models\User::select('id', 'email', 'name', 'verified')->where('email', $request->email)->first();
           $user->verified = 1;
@@ -87,7 +87,7 @@ class UserController extends Controller
           ]);
      }
 
-     public function resetPassword(\App\Http\Requests\PasswordResetRequest $request)
+     public function resetPassword(\App\Http\Requests\User\PasswordResetRequest $request)
      {
           $user = \App\Models\User::select('password', 'id')->where('email', $request->email)->first();
           $user->password = \Illuminate\Support\Facades\Hash::make($request->password);
@@ -101,7 +101,7 @@ class UserController extends Controller
          ]);
      }
 
-     public function changePassword(\App\Http\Requests\PasswordResetRequest $request)
+     public function changePassword(\App\Http\Requests\User\PasswordResetRequest $request)
      {
             // Change the hashed password
             $user = \App\Models\User::select('password', 'id')->where('email', auth()->user()->email)->first();

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Question;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateTopicRequest extends FormRequest
+class QuestionIdRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,7 @@ class CreateTopicRequest extends FormRequest
     public function rules()
     {
         return [
-             'title' => 'required|string|unique:topics,title',
-             'faculty' => 'required|string',
-             'department' => 'required|string',
+             'question_id' => 'required|exists:questions,id'
         ];
     }
 }

@@ -40,7 +40,7 @@ class QuestionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(\App\Http\Requests\CreateQuestionRequest $request)
+    public function store(\App\Http\Requests\Question\CreateQuestionRequest $request)
     {
          $question = \App\Actions\CreateNewQuestion::create($request);
          return response()->json([
@@ -57,7 +57,7 @@ class QuestionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(\App\Http\Requests\QuestionIdRequest $request)
+    public function show(\App\Http\Requests\Question\QuestionIdRequest $request)
     {
          return response()->json([
                'status' => true,
@@ -85,7 +85,7 @@ class QuestionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(\App\Http\Requests\Question\QuestionIdRequest $request)
     {
          $question = \App\Models\Question::whereId($request->topic_id)->first();
          $question->question = $request->question;
@@ -109,7 +109,7 @@ class QuestionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(\App\Http\Requests\QuestionIdRequest $request)
+    public function destroy(\App\Http\Requests\Question\QuestionIdRequest $request)
     {
         $question = \App\Models\Question::whereId($request->id)->delete();
         return response()->json([
@@ -133,7 +133,7 @@ class QuestionController extends Controller
         ]);
     }
 
-    public function activateQuestion(\App\Http\Requests\QuestionIdRequest $request)
+    public function activateQuestion(\App\Http\Requests\Question\QuestionIdRequest $request)
     {
          $activate = \App\Models\Question::whereId($request->question_id)->first();
          $activate->status = 1;

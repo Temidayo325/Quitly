@@ -13,7 +13,7 @@ class CreateNewUser
      * @param  array  $input
      * @return \App\Models\User
      */
-    public static function create(\App\Http\Requests\UserRegisterRequest $input)
+    public static function create(\App\Http\Requests\User\UserRegisterRequest $input)
     {
          $checkRole = \App\Services\checkRole::check($input->email);
          logger($checkRole);

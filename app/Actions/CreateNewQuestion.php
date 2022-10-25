@@ -13,7 +13,7 @@ class CreateNewQuestion
      * @param  array  $input
      * @return \App\Models\Question
      */
-    public static function create(\App\Http\Requests\CreateQuestionRequest $input)
+    public static function create(\App\Http\Requests\Question\CreateQuestionRequest $input)
     {
          $question =  Question::create([
             'question' => $input->question,
