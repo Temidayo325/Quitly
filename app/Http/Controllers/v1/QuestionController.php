@@ -4,6 +4,8 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Imports\QuestionsImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class QuestionController extends Controller
 {
@@ -113,6 +115,32 @@ class QuestionController extends Controller
         return response()->json([
                  'status' => true,
                   'message' => 'Question successfully deleted',
+                  'statusCode' => 201
+        ]);
+    }
+    /**
+     * [importQuestion For importing the questions that compiled on Excel file]
+     * @param  App\Http\Requests\Question $request               [description]
+     * @return [type]           [description]
+     */
+    public function importQuestion(\App\Http\Requests\Question\ImportQuestionRequest $request)
+    {
+         Excel::import(new QuestionsImport($request->topic_id), $request->question);
+         return response()->json([
+                 'status' => true,
+                  'message' => 'Question successfully imported',
+                  'statusCode' => 201
+        ]);
+    }
+
+    public function activateQuestion(\App\Http\Requests\QuestionIdRequest $request)
+    {
+         $activate = \App\Models\Question::whereId($request->question_id)->first();
+         $activate->status = 1;
+         $activate->save();
+         return response()->json([
+                 'status' => true,
+                  'message' => 'Question status successfully updated',
                   'statusCode' => 201
         ]);
     }

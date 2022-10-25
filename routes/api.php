@@ -35,5 +35,7 @@ Route::delete('/topics/{id}', [App\Http\Controllers\v1\TopicController::class, '
 Route::get('/question', [App\Http\Controllers\v1\QuestionController::class, 'index']);
 Route::get('/question/{id}', [App\Http\Controllers\v1\QuestionController::class, 'show']);
 Route::post('/question', [App\Http\Controllers\v1\QuestionController::class, 'store']);
+Route::post('/importquestion', [App\Http\Controllers\v1\QuestionController::class, 'importQuestion']);
 Route::patch('/question', [App\Http\Controllers\v1\QuestionController::class, 'update']);
+Route::patch('/question/{id}', [App\Http\Controllers\v1\QuestionController::class, 'activateQuestion']);
 Route::delete('/question/{id}', [App\Http\Controllers\v1\QuestionController::class, 'destroy']);
