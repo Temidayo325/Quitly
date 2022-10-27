@@ -39,3 +39,6 @@ Route::post('/importquestion', [App\Http\Controllers\v1\QuestionController::clas
 Route::patch('/question', [App\Http\Controllers\v1\QuestionController::class, 'update']);
 Route::patch('/question/{id}', [App\Http\Controllers\v1\QuestionController::class, 'activateQuestion']);
 Route::delete('/question/{id}', [App\Http\Controllers\v1\QuestionController::class, 'destroy']);
+// Quiz resource
+Route::get('/quiz', [App\Http\Controllers\v1\QuizController::class, 'startQuiz']);
+Route::post('/quiz', [App\Http\Controllers\v1\QuizController::class, 'submitResult']);

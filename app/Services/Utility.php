@@ -48,4 +48,13 @@ class Utility
 		return preg_replace('/[^0-9]/', '', strip_tags(trim($elem)));
 	}
 
+	// public static function randomNumber(array $array):int
+	// {
+	// 	$count = count($array) * 10;
+	// 	for ($i=0; $i < $count; $i++) {
+	// 		if (condition) {
+	// 			// code...
+	// 		}
+	// 	}
+	// }
 }
