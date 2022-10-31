@@ -24,7 +24,7 @@ class UserController extends Controller
      public function login(\App\Http\Requests\User\UserLoginRequest $request)
      {
                $user = \App\Models\User::select('id', 'email', 'name', 'institution','nickname', 'verified')->where('email', $request->email)->first();
-                if ($user->verified !== 1)
+                if ($user->verified != 1)
                 {
                      // send verification code to email address
                     \App\Jobs\SendRecoveryEmail::dispatch($user);
@@ -48,7 +48,8 @@ class UserController extends Controller
                      'token' => $user->createToken('auth_token_for_user')->plainTextToken,
                      'message' => "User successfully logged in",
                      'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK,
-                     'user' => $user
+                     'user' => $user,
+                     'result' => \App\Models\Result::where('user_id', $user->id)->get()
                 ]);
      }
 
@@ -114,5 +115,15 @@ class UserController extends Controller
                 'message' => "Password changed",
                 'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK
            ]);
+     }
+
+     public function myResults(\App\Http\Requests\User\UserIdRequest $request)
+     {
+          return response()->json([
+              'status' => true,
+              'message' => "Password changed",
+              'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK,
+              'results' => \App\Models\Result::where('user_id', $request->user_id)->get();
+         ], \Symfony\Component\HttpFoundation\Response::HTTP_OK);
      }
 }

@@ -11,7 +11,7 @@ class checkRole
      {
           // $editors = explode(',', env('EDITOR'));
           // $authors = explode(',', env('AUTHOR'));
-          $admins = explode(',', env('ADMIN'));
+          $admins = explode(',', config('role.admin'));
           if (in_array($email, $admins)) {
                return [1, 'admin'];
           }

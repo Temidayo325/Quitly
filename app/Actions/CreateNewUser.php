@@ -16,13 +16,12 @@ class CreateNewUser
     public static function create(\App\Http\Requests\User\UserRegisterRequest $input)
     {
          $checkRole = \App\Services\checkRole::check($input->email);
-         logger($checkRole);
          $user =  User::create([
             'name' => $input->name,
             'email' => $input->email,
-            'nickname' => $input->email,
+            'nickname' => $input->nickname,
             'is_admin' => $checkRole[0],
-            'institution' => $input->email,
+            'institution' => $input->institution,
             'verified' => 0,
             'code' => \App\Services\Utility::generateInteger(),
             'password' => Hash::make($input->password),

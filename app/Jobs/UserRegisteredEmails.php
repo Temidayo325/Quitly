@@ -22,9 +22,7 @@ class UserRegisteredEmails implements ShouldQueue
      */
     public function __construct($user)
     {
-            info($user);
             $this->user = (object) $user;
-            // info($this->user);
     }
 
     /**
