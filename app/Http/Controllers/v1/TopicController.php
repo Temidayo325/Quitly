@@ -61,7 +61,10 @@ class TopicController extends Controller
               'status' => true,
               'message' => 'Topic successfully retrieved',
               'statusCode' => 201,
-              'data' => \App\Models\Topic::whereId($id)->first()
+              'data' => [
+                    'topic' =>  \App\Models\Topic::whereId($id)->first(),
+                    'questions' => \App\Models\Question::where('topic_id', $id)->get()
+              ]
             ]);
     }
 
