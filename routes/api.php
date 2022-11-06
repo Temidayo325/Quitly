@@ -42,3 +42,5 @@ Route::delete('/question/{id}', [App\Http\Controllers\v1\QuestionController::cla
 // Quiz resource
 Route::get('/quiz', [App\Http\Controllers\v1\QuizController::class, 'startQuiz']);
 Route::post('/quiz', [App\Http\Controllers\v1\QuizController::class, 'submitResult']);
+// Result resource
+Route::get('/result', [App\Http\Controllers\v1\UserController::class, 'myResults']);

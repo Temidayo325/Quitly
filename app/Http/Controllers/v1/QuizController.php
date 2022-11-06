@@ -25,13 +25,13 @@ class QuizController extends Controller
     public function submitResult(Request $request)
     {
          $previousResults = \App\Models\Result::where('user_id', $request->user_id)->where('topic_id', $request->topic_id)->oldest()->get();
-         if ($previousResults !== null && count($previousResults) > 2) {
+         if ($previousResults !== null && count($previousResults) > 14) {
               // user has exhausted the 3 store-able result
               $toDel = $previousResults->first();
               $toDel->delete();
               $result = \App\Actions\CreateNewResult::create($request);
          }
-         if ($previousResults !== null && count($previousResults) < 3) {
+         if ($previousResults !== null && count($previousResults) < 15) {
               $result = \App\Actions\CreateNewResult::create($request);
          }
          

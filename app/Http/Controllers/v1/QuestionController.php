@@ -136,7 +136,7 @@ class QuestionController extends Controller
     public function activateQuestion(\App\Http\Requests\Question\QuestionIdRequest $request)
     {
          $activate = \App\Models\Question::whereId($request->question_id)->first();
-         $activate->status = 1;
+         $activate->status = ($activate->status == 0) ? 1 : 0);
          $activate->save();
          return response()->json([
                  'status' => true,

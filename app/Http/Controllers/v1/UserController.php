@@ -40,8 +40,7 @@ class UserController extends Controller
                      return response()->json([
                           'status' => false,
                           'statusCode' => 422,
-                          'message' => "Invalid input given, ensure your password and email are correct",
-                          'user' => $user
+                          'message' => "Invalid input given, ensure your password and email are correct"
                      ]);
                 }
                 return response()->json([
@@ -49,7 +48,8 @@ class UserController extends Controller
                      'message' => "User successfully logged in",
                      'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK,
                      'user' => $user,
-                     'result' => \App\Models\Result::where('user_id', $user->id)->get()
+                     'results' => \App\Models\Result::where('user_id', $user->id)->get(),
+                     'topics' => \App\Models\Topic::all()
                 ]);
      }
 
@@ -123,7 +123,13 @@ class UserController extends Controller
               'status' => true,
               'message' => "Password changed",
               'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK,
-              'results' => \App\Models\Result::where('user_id', $request->user_id)->get();
+              'results' => \App\Models\Result::where('user_id', $request->user_id)->get()->map(function($item){
+                    return [
+                         'score' => $item->score,
+                         'topic' => \App\Models\Topic::select('title')->whereId($item->topic_id)->first(),
+                         'date' => \Carbon\Carbon::parse($item->created_at)->diffForHumans()
+                    ];
+              })
          ], \Symfony\Component\HttpFoundation\Response::HTTP_OK);
      }
 }
