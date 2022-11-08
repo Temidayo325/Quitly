@@ -48,7 +48,13 @@ class UserController extends Controller
                      'message' => "User successfully logged in",
                      'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK,
                      'user' => $user,
-                     'results' => \App\Models\Result::where('user_id', $user->id)->get(),
+                     'results' => \App\Models\Result::where('user_id', $user->id)->get()->map(function($item){
+                          return [
+                                'score' => $item->score,
+                                'topic' => \App\Models\Topic::select('title')->whereId($item->topic_id)->first(),
+                                 'date' => \Carbon\Carbon::parse($item->created_at)->diffForHumans()
+                              ];
+                      }),
                      'topics' => \App\Models\Topic::all()
                 ]);
      }
@@ -78,9 +84,11 @@ class UserController extends Controller
           ]);
      }
 
-     public function logout(Request $request)
+     public function logout(\App\Http\Requests\User\UserIdRequest $request)
      {
-          \Illuminate\Support\Facades\Auth::user()->currentAccessToken()->delete();
+          // \Illuminate\Support\Facades\Auth::user()->currentAccessToken()->delete();
+          $user = \App\Models\User::whereId($request->user_id)->first();
+          $user->tokens()->delete();
           return response()->json([
                'status' => true,
                'message' => "You have been logged out from your account",
@@ -121,7 +129,7 @@ class UserController extends Controller
      {
           return response()->json([
               'status' => true,
-              'message' => "Password changed",
+              'message' => "Result retrieved successfully",
               'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK,
               'results' => \App\Models\Result::where('user_id', $request->user_id)->get()->map(function($item){
                     return [

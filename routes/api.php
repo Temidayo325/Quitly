@@ -20,11 +20,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/register', [App\Http\Controllers\v1\UserController::class, 'register']);
 Route::post('/login', [App\Http\Controllers\v1\UserController::class, 'login']);
+
 Route::post('/verifyEmail', [App\Http\Controllers\v1\UserController::class, 'verifyEmail']);
 Route::post('/resetPassword', [App\Http\Controllers\v1\UserController::class, 'resetPassword']);
 
 // Wrap everything around here under the auth middleware
 Route::post('/changePassword', [App\Http\Controllers\v1\UserController::class, 'changePassword'])->middleware('auth:sanctum');
+Route::post('/logout', [App\Http\Controllers\v1\UserController::class, 'logout']);
 // Topic resource
 Route::get('/topics', [App\Http\Controllers\v1\TopicController::class, 'index']);
 Route::get('/topics/{id}', [App\Http\Controllers\v1\TopicController::class, 'show']);

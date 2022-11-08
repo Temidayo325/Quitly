@@ -10,7 +10,20 @@ class QuizController extends Controller
     public function startQuiz(\App\Http\Requests\Question\QuizRequest $request)
     {
          $details = \App\Models\TestDetail::first();
-         $questions = \App\Models\Question::whereStatus(1)->where('topic_id', $request->topic_id)->inRandomOrder()->limit($details->quantity)->get();
+         $questions = \App\Models\Question::whereStatus(1)->where('topic_id', $request->topic_id)->inRandomOrder()->limit($details->quantity)->get()->map(function($item){
+                    return [
+                         'id' => $item->id,
+                         'question' => ucfirst($item->question),
+                         'option1' => ucfirst($item->option3),
+                         'option2' => ucfirst($item->option4),
+                         'option3' => ucfirst($item->option1),
+                         'option4' => ucfirst($item->option2),
+                         'answer' => $item->answer,
+                         'type' => $item->type,
+                         'chosen' => '',
+                         'hidden' => true
+                    ];
+               });
          return response()->json([
               'status' => true,
               'message' => "Question succesfully retrieved",
