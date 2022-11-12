@@ -18,7 +18,18 @@ class TopicController extends Controller
           'status' => true,
           'message' => 'Topic successfully created',
           'statusCode' => 201,
-          'data' => \App\Models\Topic::all()
+          'data' => \App\Models\Topic::all()->map(function($item){
+              return [
+                    'id' => $item->id,
+                    'title' => $item->title,
+                    'department' => $item->department,
+                    'faculty' => $item->faculty,
+                    'question' => \App\Models\Question::where('topic_id', $item->id)->count()
+                ];
+          }),
+          'users' => \App\Models\User::count(),
+          'faculties' => \App\Models\Topic::distinct()->count('department'),
+          'results' => \App\Models\Result::count()
         ]);
     }
 

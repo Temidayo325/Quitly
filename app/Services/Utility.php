@@ -24,7 +24,7 @@ class Utility
 
 		public static function generateInteger($length = 6)
 		{
-			$char = '0123456789';
+			$char = '123456789';
 			$random = '';
 
 			for ($i=0; $i < $length; $i++) {

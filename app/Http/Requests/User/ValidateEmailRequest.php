@@ -24,7 +24,7 @@ class ValidateEmailRequest extends FormRequest
     public function rules()
     {
         return [
-             'code' => 'required|exists:users,code|string|bail',
+             'code' => 'required|exists:users,code|integer|bail',
              'email' => 'required|email|exists:users,email|bail'
         ];
     }

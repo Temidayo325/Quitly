@@ -20,6 +20,38 @@ class UserController extends Controller
                'statusCode' => 201
           ]);
      }
+     
+     public function adminLogin(\App\Http\Requests\User\UserLoginRequest $request)
+     {
+               $user = \App\Models\User::select('id', 'email', 'name', 'institution','nickname', 'verified')->where('email', $request->email)->first();
+                if ($user->verified != 1)
+                {
+                     // send verification code to email address
+                    \App\Jobs\SendRecoveryEmail::dispatch($user);
+                    // $request->session()->put('email', $request->email);
+                    return response()->json([
+                         'status' => false,
+                         'statusCode' => 303,
+                         'message' => "Account not verified"
+                    ]);
+                }
+                // check if the password is correct and Authenticate user
+                if ( ! \Illuminate\Support\Facades\Auth::attempt(['email' => $request->email, 'password' => $request->password]) && $user->is_admin != 0) {
+                     return response()->json([
+                          'status' => false,
+                          'statusCode' => 422,
+                          'message' => "Invalid input given, ensure your password and email are correct"
+                     ]);
+                }
+                return response()->json([
+                     'token' => $user->createToken('auth_token_for_user')->plainTextToken,
+                     'message' => "User successfully logged in",
+                     'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK,
+                     'user' => $user,
+                     'topics' => \App\Models\Topic::all(),
+                     'questions' => \App\Models\Question::whereStatus(0)->oldest()->limit(100)->get()
+                ]);
+     }
 
      public function login(\App\Http\Requests\User\UserLoginRequest $request)
      {
@@ -43,19 +75,26 @@ class UserController extends Controller
                           'message' => "Invalid input given, ensure your password and email are correct"
                      ]);
                 }
+                $results = \App\Models\Result::where('user_id', $user->id)->latest()->get()->map(function($item){
+                          return [
+                                'score' => $item->score,
+                                'topic' => \App\Models\Topic::select('title')->whereId($item->topic_id)->first(),
+                                 'date' => \Carbon\Carbon::parse($item->created_at)->diffForHumans(),
+                                 'grade' => \App\Models\Grade::whereId($item->grade_id)->first()->grade,
+                                 'opinion' => \App\Models\Grade::whereId($item->grade_id)->first()->term
+                              ];
+                      });
+                $topics = \App\Models\Topic::latest()->get();
                 return response()->json([
                      'token' => $user->createToken('auth_token_for_user')->plainTextToken,
                      'message' => "User successfully logged in",
                      'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK,
                      'user' => $user,
-                     'results' => \App\Models\Result::where('user_id', $user->id)->get()->map(function($item){
-                          return [
-                                'score' => $item->score,
-                                'topic' => \App\Models\Topic::select('title')->whereId($item->topic_id)->first(),
-                                 'date' => \Carbon\Carbon::parse($item->created_at)->diffForHumans()
-                              ];
-                      }),
-                     'topics' => \App\Models\Topic::all()
+                     'countedResult' => count($results),
+                     'results' => $results->take(3),
+                     'countTopics' => $topics->count(),
+                     'topics' => $topics,
+                     'top3' => $topics->take(3)
                 ]);
      }
 
@@ -86,7 +125,6 @@ class UserController extends Controller
 
      public function logout(\App\Http\Requests\User\UserIdRequest $request)
      {
-          // \Illuminate\Support\Facades\Auth::user()->currentAccessToken()->delete();
           $user = \App\Models\User::whereId($request->user_id)->first();
           $user->tokens()->delete();
           return response()->json([
@@ -124,19 +162,19 @@ class UserController extends Controller
                 'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK
            ]);
      }
-
+     
      public function myResults(\App\Http\Requests\User\UserIdRequest $request)
      {
           return response()->json([
               'status' => true,
               'message' => "Result retrieved successfully",
               'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK,
-              'results' => \App\Models\Result::where('user_id', $request->user_id)->get()->map(function($item){
-                    return [
-                         'score' => $item->score,
-                         'topic' => \App\Models\Topic::select('title')->whereId($item->topic_id)->first(),
+              'results' => \App\Models\Result::where('user_id', $request->user_id)->latest()->limit(15)->get()->map(function($item){
+                  return [
+                        'score' => $item->score,
+                        'topic' => \App\Models\Topic::select('title')->whereId($item->topic_id)->first(),
                          'date' => \Carbon\Carbon::parse($item->created_at)->diffForHumans()
-                    ];
+                      ];
               })
          ], \Symfony\Component\HttpFoundation\Response::HTTP_OK);
      }

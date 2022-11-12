@@ -14,10 +14,12 @@ class CreateNewResult
      */
     public static function create(\Illuminate\Http\Request $input)
     {
+        $grade = \App\Models\Grade:::where('lower_limit', '<=', $input->score)->where('upper_limit', '>=', $input->score)->first();
          $result =  Result::create([
             'user_id' => $input->user_id,
             'score' => $input->score,
-            'topic_id' => $input->topic_id
+            'topic_id' => $input->topic_id,
+            'grade_id' => $grade->id
         ]);
         return $result;
     }

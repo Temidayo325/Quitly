@@ -10,11 +10,16 @@ class Result extends Model
     use HasFactory;
 
     protected $fillable = [
-         'user_id', 'score', 'topic_id'
+         'user_id', 'score', 'topic_id', 'grade_id'
     ];
 
     public function user()
     {
          return $this->belongsTo(User::class);
+    }
+
+    public function grade()
+    {
+          return $this->belongsTo(Grade::class);
     }
 }

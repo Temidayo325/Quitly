@@ -52,6 +52,16 @@ class QuizController extends Controller
               'status' => true,
               'message' => "Result successfully saved",
               'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK,
+               'results' => \App\Models\Result::where('user_id', $user->id)->latest()->get()->map(function($item){
+                          return [
+                                'score' => $item->score,
+                                'topic' => \App\Models\Topic::select('title')->whereId($item->topic_id)->first(),
+                                 'date' => \Carbon\Carbon::parse($item->created_at)->diffForHumans(),
+                                 'grade' => \App\Models\Grade::whereId($item->grade_id)->first()->grade,
+                                 'opinion' => \App\Models\Grade::whereId($item->grade_id)->first()->term
+                              ];
+                      }),
+
          ]);
     }
 }
