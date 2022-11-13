@@ -169,13 +169,15 @@ class UserController extends Controller
               'status' => true,
               'message' => "Result retrieved successfully",
               'statusCode' =>  \Symfony\Component\HttpFoundation\Response::HTTP_OK,
-              'results' => \App\Models\Result::where('user_id', $request->user_id)->latest()->limit(15)->get()->map(function($item){
-                  return [
-                        'score' => $item->score,
-                        'topic' => \App\Models\Topic::select('title')->whereId($item->topic_id)->first(),
-                         'date' => \Carbon\Carbon::parse($item->created_at)->diffForHumans()
-                      ];
-              })
+              'results' => \App\Models\Result::where('user_id', $request->user_id)->latest()->get()->map(function($item){
+                          return [
+                                'score' => $item->score,
+                                'topic' => \App\Models\Topic::select('title')->whereId($item->topic_id)->first(),
+                                 'date' => \Carbon\Carbon::parse($item->created_at)->diffForHumans(),
+                                 'grade' => \App\Models\Grade::whereId($item->grade_id)->first()->grade,
+                                 'opinion' => \App\Models\Grade::whereId($item->grade_id)->first()->term
+                              ];
+                      })
          ], \Symfony\Component\HttpFoundation\Response::HTTP_OK);
      }
 }
