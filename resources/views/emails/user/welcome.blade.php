@@ -1,21 +1,15 @@
 @component('mail::message')
-# Takeaquiz is a tutor's dream come true!
+<img src=' http://127.0.0.1:8000/images/pexels-cottonbro-3826676-compressed.jpg' alt="Quizly welcome banner ">
 
-Hi {{$name}}!
-Welcome to Takeaquiz! With our platform, you can create, manage and mark multiple choice questions for your class.
- We've made it easy for you to get started. 
-Here's how to create questions:
-1) Click on the course link on your dashboard to create a course.
-2) Click on the Create course button.
-3) Enter the course name and click the create button.
-3) Click the Question link on your dashboard (by your left). 
-4) Click the course to add questions and then edit the timeline for your quiz test. 
+<h1 style="margin-top: 20px">Hey {{$name}} 😍😍!</h1>
 
+Welcome to Quizly 🤝🤝, we offer you exciting assessments in your chosen course of study to test your reading comprehension per each topic available. It is free to get started
+Have fun using platform and don't forget to tell your friends about it if you find it helpful 🥺🥺
 
 @component('mail::panel')
-Best of luck with your classes! We're here to help if you need any assistance along the way. 
+Reduce your chance of seeing shege with Quizly in your tests and exams with Quizly 😁😁.
 @endcomponent
 
 Thanks,<br>
-{{ config('app.name') }}
+Theresa from {{ config('app.name') }}
 @endcomponent

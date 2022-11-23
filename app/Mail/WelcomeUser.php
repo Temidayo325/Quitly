@@ -29,9 +29,9 @@ class WelcomeUser extends Mailable
     public function build()
     {
         return $this->subject('Welcome to Takeaquiz')
-                 ->markdown('emails.user.welcome')
-                 ->with([
-                     'name' => $this->name
-                 ]);
+                 ->markdown('emails.user.welcome', ['name' => $this->name]);
+                 // ->with([
+                 //     'name' => $this->name
+                 // ]);
     }
 }

@@ -32,11 +32,11 @@ class UserRegisteredEmails implements ShouldQueue
      */
     public function handle()
     {
-            $code = \App\Services\Utility::generateInteger();
-            $user = \App\Models\User::select('code', 'id')->where('email', $this->user->email)->first();
-            $user->code = $code;
-            $user->save();
-           Mail::to($this->user->email)->send(new \App\Mail\VerifyUser($code));
+            // $code = \App\Services\Utility::generateInteger();
+            // $user = \App\Models\User::select('code', 'id')->where('email', $this->user->email)->first();
+            // $user->code = $code;
+            // $user->save();
+           Mail::to($this->user->email)->send(new \App\Mail\VerifyUser($this->user->code));
            Mail::to($this->user->email)->send(new \App\Mail\WelcomeUser($this->user->name));
     }
 
